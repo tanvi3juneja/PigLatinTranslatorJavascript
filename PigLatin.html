@@ -1,0 +1,218 @@
+
+<html>
+<head>
+<script language="JavaScript">
+
+gVowels = "AEIOUaeiou";     
+gVowelsY = "AEIOUaeiouYy";  
+gYay = "yay";               
+gAy = "ay";                 
+
+function clearText () {
+
+   document.frmTranslator.textEnglish.value = ""; 
+   document.frmTranslator.textEnglish.focus(); 
+
+   return;
+
+}  
+
+
+function translatePig () {
+
+   var text;        
+   var textPigLatin;    
+   var line;        
+   var word;        
+   var bWord;        
+   var cChar;        
+   var newLine;     
+   var maxLineLength;   
+   var learnModeFlag;   
+
+
+   if (navigator.appVersion.lastIndexOf ("Win") != -1)  
+      newLine = "\r\n";  
+
+   else
+      newLine = "\n";  
+
+   text = document.frmTranslator.textEnglish.value;  
+   textPigLatin = "";  
+   line = "";      
+   word = "";      
+   bWord = true;    
+
+   for (var iChar = 0; iChar <= text.length; ++iChar) {
+
+      cChar = text.charAt (iChar);  
+
+      if ((cChar >= "A" && cChar <= "Z") ||
+            (cChar >= "a" && cChar <= "z") ||
+            (cChar == "'" && bWord && word != "")) {  
+
+         if (!bWord) {  
+            if (line.length + word.length >= maxLineLength) {  
+               textPigLatin += line + newLine;  
+               line = "";  
+            }
+
+            line += word;  
+            word = "";  
+            bWord = true;  
+         }
+
+         word += cChar;  
+
+      } else {  
+         if (bWord && word != "") {  
+            word = pigLatin (word);  
+
+            if (line.length + word.length >= maxLineLength) {  
+               textPigLatin += line + newLine;  
+               line = "";  
+            }
+
+            line += word;  
+            word = "";  
+         }
+
+         word += cChar;  
+         bWord = false;  
+
+         if (cChar == "\r" || cChar == "\n") {  
+            textPigLatin += line + word;  
+            line = "";  
+            word = "";  
+         }
+      }
+
+   }  
+
+   textPigLatin += line + word;  
+
+   document.frmTranslator.textPigLatin.value = textPigLatin;  
+
+  
+
+}  
+
+
+function pigLatin (pword) {
+
+   var word;        
+   var first;       
+   var suffix;      
+   var last;        
+   var cap;  
+   var scap; 
+
+
+   word = pword; 
+   first = word.charAt (0); 
+   cap = (first == first.toUpperCase()) ? true : false;  
+   suffix = "";
+
+   if (gVowels.indexOf (first) >= 0) {  
+      suffix = gYay;  
+      last = word.charAt (word.length - 1);  
+
+      if (last == last.toUpperCase() && word.length > 1) 
+         suffix = gYay.toUpperCase();  
+      
+   } else {  
+      if (word != word.toUpperCase())  
+         first = first.toLowerCase();  
+
+      iChars = word.length;  
+
+      while (iChars--) {  
+
+        suffix += first;  
+        last = first;  
+
+        scap = (first == first.toUpperCase()) ? true : false; 
+        word = word.substring (1, word.length);  
+        first = word.charAt (0);  
+
+        if (gVowelsY.indexOf (first) >= 0) {  
+           if (!((last == "q" || last == "Q") &&
+                 (first == "u" || first == "U"))) 
+              break;  
+        }
+
+      } 
+      if (scap)
+         suffix += gAy.toUpperCase();  
+
+      else
+         suffix += gAy;  
+   }
+
+   word += suffix;  
+   if (cap) {  
+      first = word.charAt (0); 
+      word = first.toUpperCase() + word.substring (1, word.length);
+   }
+
+   return word;  
+}  
+</script>
+
+</head>
+
+<body>
+
+<div style="width: 650">
+
+<h1>
+<font face="Times New Roman,Times New,Times,Serif">
+<b>English to Pig Latin Translator </b></font>
+</h1>
+
+
+<font face="Times New Roman,Times New,Times,Serif">
+<b>
+
+<font face="Courier New,Courier,Arial,Helvetica">
+
+<form name="frmTranslator">
+
+Enter English Text to Translate:<br>
+
+&nbsp;&nbsp;<textarea name="textEnglish" rows="10" cols="60"> </textarea>
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<input value="Translate" onclick="translatePig()" type="button">
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<input value="Clear Text" onclick="clearText()" type="button">
+
+<br>
+&nbsp;<br>
+
+Text in Pig Latin:<br>
+
+&nbsp;&nbsp;<textarea name="textPigLatin" rows="10" cols="70">
+
+</textarea>
+
+</b>
+
+</form>
+
+</font>
+
+</b>
+</font>
+
+
+</div>
+
+</body>
+</html>
